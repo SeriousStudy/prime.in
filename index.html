@@ -7,7 +7,12 @@
     <title>WPRIME | EXAM PROTOCOL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <!-- Polyfill for process.env to prevent "process is not defined" error -->
+    <script>
+      window.process = window.process || { env: {} };
+    </script>
+
     <style>
         :root {
             --wprime-indigo: #6366f1;
@@ -80,23 +85,23 @@
         .prose code { background: rgba(99, 102, 241, 0.1); padding: 0.2rem 0.4rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
         .prose p { margin-bottom: 0.75rem; }
     </style>
+    
     <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.3.1",
-        "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
-        "recharts": "https://esm.sh/recharts@2.12.7?deps=react@18.3.1",
-        "react-markdown": "https://esm.sh/react-markdown@9.0.1?bundle&deps=react@18.3.1",
-        "react-dom/": "https://esm.sh/react-dom@18.3.1/",
-        "react/": "https://esm.sh/react@18.3.1/",
-        "@google/genai": "https://esm.sh/@google/genai@1.38.0"
-      }
-    }
-    </script>
-<link rel="stylesheet" href="/index.css">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "recharts": "https://esm.sh/recharts@2.12.7?deps=react@18.3.1",
+    "react-markdown": "https://esm.sh/react-markdown@9.0.1?deps=react@18.3.1",
+    "@google/genai": "https://esm.sh/@google/genai@1.38.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
+  }
+}
+</script>
 </head>
 <body class="theme-transition selection:bg-indigo-500 selection:text-white">
     <div id="root"></div>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
