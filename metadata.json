@@ -1,0 +1,9 @@
+
+{
+  "name": "Wprime | 9-Day Accountancy Protocol",
+  "version": "3.1.0",
+  "status": "Final Sprint",
+  "author": "Mr. Piyush Built This Website",
+  "description": "The elite Wprime paper-solving protocol with context-aware AI Auditing.",
+  "requestFramePermissions": ["camera", "microphone"]
+}
