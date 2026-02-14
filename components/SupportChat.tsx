@@ -8,29 +8,31 @@ const SupportChat: React.FC<{ onBack: () => void; initialMessage?: string }> = (
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<{ type: 'bot' | 'user', text: string }[]>([
-    { type: 'bot', text: "Wprime Support Node active. Calibrated for Class 12 Accountancy (Partnerships, Companies, Analysis). Ask me for any formula or concept check." }
+    { type: 'bot', text: "Wprime Support Node active. Calibrated for Class 12 Accountancy. How can I assist with your paper logic?" }
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<Chat | null>(null);
 
   useEffect(() => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    chatRef.current = ai.chats.create({
-      model: 'gemini-3-flash-preview',
-      config: {
-        systemInstruction: `You are the ELITE WPRIME ACCOUNTANCY PROFESSOR. 
-        Expertise: Partnership, Company Accounts, Cash Flow, Ratio Analysis.
-        
-        FORMULA PROTOCOL:
-        1. Use clear Markdown math formatting. 
-        2. Example: **Sacrificing Ratio = Old Ratio - New Ratio**.
-        3. Use multi-line code blocks for complex divisions.
-        4. Use Markdown tables for T-Accounts and Ledger balances.
-        5. When explaining Goodwill (Super Profit), use a numbered list for steps.
-        6. If a formula is requested, always provide a small numerical example.
-        7. Mention Mr. Piyush built this website.`,
-      },
-    });
+    // Only initialize if API_KEY is present to avoid crash
+    const apiKey = process.env.API_KEY;
+    if (apiKey) {
+      const ai = new GoogleGenAI({ apiKey });
+      chatRef.current = ai.chats.create({
+        model: 'gemini-3-flash-preview',
+        config: {
+          systemInstruction: `You are the ELITE WPRIME ACCOUNTANCY PROFESSOR. 
+          Expertise: Partnership, Company Accounts, Cash Flow, Ratio Analysis.
+          
+          FORMULA PROTOCOL:
+          1. Use clear Markdown formatting. 
+          2. Example: **Sacrificing Ratio = Old Ratio - New Ratio**.
+          3. Use code blocks for ledger entries.
+          4. Show step-by-step working notes.
+          5. Mention Mr. Piyush built this website.`,
+        },
+      });
+    }
   }, []);
 
   const handleSendMessage = useCallback(async (text: string) => {
@@ -59,7 +61,7 @@ const SupportChat: React.FC<{ onBack: () => void; initialMessage?: string }> = (
       }
     } catch (error) {
       console.error("AI Error:", error);
-      setMessages(prev => [...prev, { type: 'bot', text: "Audit failed. Please re-initiate the command." }]);
+      setMessages(prev => [...prev, { type: 'bot', text: "Audit system failed. Check your API key or connection." }]);
     } finally {
       setIsTyping(false);
     }
@@ -80,7 +82,7 @@ const SupportChat: React.FC<{ onBack: () => void; initialMessage?: string }> = (
           <div className="w-14 h-14 bg-indigo-600 rounded-3xl flex items-center justify-center text-white font-black italic shadow-2xl shadow-indigo-500/20 text-2xl">W</div>
           <div>
             <h2 className="text-2xl font-black tracking-tighter uppercase">Wprime Professor</h2>
-            <p className="text-[10px] font-black uppercase tracking-widest text-indigo-500">Master Logic Node</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-indigo-500">Expert Logic Node</p>
           </div>
         </div>
         <button onClick={onBack} className="px-8 py-4 rounded-full border border-current font-black text-[10px] uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all">Exit</button>
@@ -93,7 +95,9 @@ const SupportChat: React.FC<{ onBack: () => void; initialMessage?: string }> = (
               <div className={`max-w-[85%] p-8 rounded-[2.5rem] text-[14px] leading-relaxed border prose dark:prose-invert ${
                 m.type === 'user' ? 'bg-indigo-600 text-white border-indigo-500 shadow-xl' : isDark ? 'bg-white/5 border-white/10' : 'bg-white border-black/5'
               }`}>
-                {m.text ? <ReactMarkdown>{m.text}</ReactMarkdown> : <span className="animate-pulse">Analyzing Ledger...</span>}
+                {/* Ensure children is always a string to prevent Error 31 */}
+                <ReactMarkdown>{String(m.text || '')}</ReactMarkdown>
+                {m.type === 'bot' && m.text === "" && <span className="animate-pulse">Processing Ledger...</span>}
               </div>
             </div>
           ))}
@@ -106,7 +110,7 @@ const SupportChat: React.FC<{ onBack: () => void; initialMessage?: string }> = (
               value={input} 
               disabled={isTyping}
               onChange={e => setInput(e.target.value)} 
-              placeholder={isTyping ? "Auditor is calculating..." : "Ask for any Accountancy formula..."} 
+              placeholder={isTyping ? "Calculating..." : "Query a formula..."} 
               className={`w-full py-7 px-10 rounded-full outline-none font-black text-sm transition-all ${isDark ? 'bg-black text-white focus:bg-zinc-900' : 'bg-white text-black focus:bg-zinc-50'}`} 
             />
             <button 
